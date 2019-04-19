@@ -9,22 +9,26 @@ class BlogController extends AbstractController
 {
     public function index()
     {
-        return new Response('<h1>Homepage</h1>');
+        return $this->render('blog/index.html.twig');
     }
 
     public function add()
     {
-    	return new Response('<h1>Add an article</h1>');
+    	return $this->render('blog/add.html.twig');
     }
 
     public function show($url)
     {
-    	return new Response('<h1>Read article: ' .$url. '</h1>');
+    	return $this->render('blog/show.html.twig', [
+            'slug' => $url
+        ]);
     }
 
     public function edit($id)
     {
-    	return new Response('<h1>Update article: ' .$id. '</h1>');
+    	return $this->render('blog/edit.html.twig', [
+            'slug' => $id
+        ]);
     }
 
     public function remove($id)
