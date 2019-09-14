@@ -49,3 +49,7 @@ nav {
 	font-size: 2.2rem;
 	color: #fff;
 }
+
+textarea.materialize-textarea {
+	min-height: 10rem;
+}
