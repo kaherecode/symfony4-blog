@@ -12,7 +12,12 @@ class BlogController extends AbstractController
 {
     public function index()
     {
-        return $this->render('blog/index.html.twig');
+        $articles = $this->getDoctrine()->getRepository(Article::class)->findBy(
+            ['isPublished' => true],
+            ['publicationDate' => 'desc']
+        );
+
+        return $this->render('blog/index.html.twig', ['articles' => $articles]);
     }
 
     public function add(Request $request)
@@ -56,10 +61,10 @@ class BlogController extends AbstractController
         ]);
     }
 
-    public function show($url)
+    public function show(Article $article)
     {
     	return $this->render('blog/show.html.twig', [
-            'slug' => $url
+            'article' => $article
         ]);
     }
 
