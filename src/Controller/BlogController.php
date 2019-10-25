@@ -63,10 +63,48 @@ class BlogController extends AbstractController
         ]);
     }
 
-    public function edit($id)
+    public function edit(Article $article, Request $request)
     {
+        $oldPicture = $article->getPicture();
+
+        $form = $this->createForm(ArticleType::class, $article);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $article->setLastUpdateDate(new \DateTime());
+
+            if ($article->getIsPublished()) {
+                $article->setPublicationDate(new \DateTime());
+            }
+
+            if ($article->getPicture() !== null && $article->getPicture() !== $oldPicture) {
+                $file = $form->get('picture')->getData();
+                $fileName = uniqid(). '.' .$file->guessExtension();
+
+                try {
+                    $file->move(
+                        $this->getParameter('images_directory'),
+                        $fileName
+                    );
+                } catch (FileException $e) {
+                    return new Response($e->getMessage());
+                }
+
+                $article->setPicture($fileName);
+            } else {
+                $article->setPicture($oldPicture);
+            }
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($article);
+            $em->flush();
+
+            return new Response('L\'article a bien été modifier.');
+        }
+
     	return $this->render('blog/edit.html.twig', [
-            'slug' => $id
+            'article' => $article,
+            'form' => $form->createView()
         ]);
     }
 
