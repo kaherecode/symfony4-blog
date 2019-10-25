@@ -6,6 +6,7 @@
 	<div class="input-field col s12 m6 l6">
 		{{ form_widget(form.title, {'attr': {'placeholder': 'Titre de l\'article'}}) }}
 		{{ form_label(form.title, 'Le titre de votre article') }}
+		<span class="error">{{ form_errors(form.title) }}</span>
 	</div>
 
 	<div class="input-field col s12 m6 l6">
