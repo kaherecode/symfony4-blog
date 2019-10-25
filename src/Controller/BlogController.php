@@ -22,7 +22,33 @@ class BlogController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            return new Response('Le formulaire a été soumis...');
+            $article->setLastUpdateDate(new \DateTime());
+
+            if ($article->getPicture() !== null) {
+                $file = $form->get('picture')->getData();
+                $fileName = uniqid(). '.' .$file->guessExtension();
+
+                try {
+                    $file->move(
+                        $this->getParameter('images_directory'),
+                        $fileName
+                    );
+                } catch (FileException $e) {
+                    return new Response($e->getMessage());
+                }
+
+                $article->setPicture($fileName);
+            }
+
+            if ($article->getIsPublished()) {
+                $article->setPublicationDate(new \DateTime());
+            }
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($article);
+            $em->flush();
+
+            return new Response('L\'article a bien été enregistrer.');
         }
 
     	return $this->render('blog/add.html.twig', [
