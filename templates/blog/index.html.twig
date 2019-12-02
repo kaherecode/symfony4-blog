@@ -9,7 +9,7 @@
 				<div class="col s12 m4 l3">
 					<div class="article-card">
 						<img src="{{ asset('uploads/' ~ article.picture) }}" class="responsive-img">
-						<h2><a href="{{ path('article_show', {'url': article.id}) }}">{{ article.title }}</a></h2>
+						<h2><a href="{{ path('article_show', {'url': article.url}) }}">{{ article.title }}</a></h2>
 						<span class="date">{{ article.publicationDate|date('d/m/Y') }}</span>
 					</div>
 				</div>

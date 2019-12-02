@@ -28,6 +28,7 @@ class BlogController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $article->setLastUpdateDate(new \DateTime());
+            $article->setUrl($this->generateSlug($article->getTitle()));
 
             if ($article->getPicture() !== null) {
                 $file = $form->get('picture')->getData();
@@ -78,6 +79,10 @@ class BlogController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $article->setLastUpdateDate(new \DateTime());
 
+            if (!$article->getIsPublished()) {
+                $article->setUrl($this->generateSlug($article->getTitle()));
+            }
+
             if ($article->getIsPublished()) {
                 $article->setPublicationDate(new \DateTime());
             }
@@ -116,5 +121,34 @@ class BlogController extends AbstractController
     public function remove($id)
     {
     	return new Response('<h1>Delete article: ' .$id. '</h1>');
+    }
+
+    /**
+     * Transform a string to a valid url
+     * @param  string $str       [description]
+     * @param  array  $replace   [description]
+     * @param  string $delimiter [description]
+     * @return string            [description]
+     */
+    public function generateSlug($str, $replace = array(), $delimiter = '-'): string
+    {
+        if (!empty($replace)) {
+            $str = str_replace((array) $replace, ' ', $str);
+        }
+
+        $accent = array("é", "è");
+        $str    = str_replace($accent, 'e', $str);
+        $str    = str_replace('ç', 'c', $str);
+
+        $clean = iconv('UTF-8', 'ASCII//TRANSLIT', $str);
+        $clean = preg_replace("/[^a-zA-Z0-9\/_|+ -]/", '', $clean);
+        $clean = strtolower(trim($clean, '-'));
+        $clean = preg_replace("/[\/_|+ -]+/", $delimiter, $clean);
+
+        if (substr($clean, -1) == '-') {
+            $clean = substr($clean, 0, strlen($clean) - 1);
+        }
+
+        return $clean;
     }
 }

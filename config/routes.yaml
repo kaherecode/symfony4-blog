@@ -7,7 +7,7 @@ article_add:
   controller: App\Controller\BlogController::add
 
 article_show:
-  path: /show/{id}
+  path: /show/{url}
   controller: App\Controller\BlogController::show
 
 article_edit:
