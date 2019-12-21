@@ -17,7 +17,11 @@
 	    		<a href="{{ path('homepage') }}" class="brand-logo">Symfony Blog</a>
 			      	<ul id="nav-mobile" class="right hide-on-med-and-down">
 			        <li><a href="{{ path('homepage') }}">Home</a></li>
-			        <li><a href="#">Login</a></li>
+			        {% if app.user %}
+						<li><a href="/logout">Logout</a></li>
+					{% else %}
+						<li><a href="/login">Login</a></li>
+			        {% endif %}
 		      	</ul>
 	    	</div>
 	    </div>
