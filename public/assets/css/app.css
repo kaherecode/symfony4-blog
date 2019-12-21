@@ -54,7 +54,7 @@ textarea.materialize-textarea {
 	min-height: 10rem;
 }
 
-.input-field span.error {
+span.error {
 	color: #e04447;
 	font-size: 12px;
 }
