@@ -58,3 +58,16 @@ span.error {
 	color: #e04447;
 	font-size: 12px;
 }
+
+span.badge {
+	font-size: 12px;
+	color: #fff;
+}
+
+span.badge.success {
+	background-color:
+}
+
+table td a {
+	color: #000;
+}

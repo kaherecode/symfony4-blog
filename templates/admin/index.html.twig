@@ -1,0 +1,77 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Admin. | {{ parent() }}{% endblock %}
+
+{% block content %}
+    <div class="admin-page">
+        <div class="container">
+            <div class="row">
+                <div class="col s12">
+                    <a href="{{ path('article_add') }}" class="btn btn blue darken-4" style="float: right">Ajouter</a>
+                    <h5>Articles</h5>
+                    <table>
+                        <tr>
+                            <th>#</th>
+                            <th>Titre</th>
+                            <th>Publier</th>
+                            <th>Date de publication</th>
+                            <th>Date de modification</th>
+                            <th>Actions</th>
+                        </tr>
+                        {% set i = 1 %}
+                        {% for article in articles %}
+                            <tr>
+                                <td>{{ i }}</td>
+                                <td><a href="{{ path('article_show', {'url': article.url}) }}" target="_blank">{{ article.title }}</a></td>
+                                <td>
+                                    <span class="badge {{ article.isPublished ? 'blue' : 'red' }}">
+                                        {{ article.isPublished ? 'oui' : 'non' }}
+                                    </span>
+                                </td>
+                                <td>{{ article.isPublished ? article.publicationDate|date('d/m/Y') : '-' }}</td>
+                                <td>{{ article.lastUpdateDate|date('d/m/Y') }}</td>
+                                <td>
+                                    <a href="{{ path('article_edit', {'id': article.id}) }}"><i class="material-icons blue-text">edit</i></a>
+                                    <a href="{{ path('article_remove', {'id': article.id}) }}"><i class="material-icons red-text">delete</i></a>
+                                </td>
+                            </tr>
+                            {% set i = i+1 %}
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col s12 m-t-30">
+                    <h5>Utilisateurs</h5>
+                    <table>
+                        <tr>
+                            <th>#</th>
+                            <th>Adresse email</th>
+                            <th>Username</th>
+                            <th>Roles</th>
+                            <th>Actions</th>
+                        </tr>
+                        {% set i = 1 %}
+                        {% for user in users %}
+                            <tr>
+                                <td>{{ i }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.username }}</td>
+                                <td>
+                                    <span class="badge blue">
+                                        admin.
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href=""><i class="material-icons red-text">delete</i></a>
+                                </td>
+                            </tr>
+                            {% set i = i+1 %}
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

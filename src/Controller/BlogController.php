@@ -2,11 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Entity\Article;
 use App\Form\ArticleType;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class BlogController extends AbstractController
 {
@@ -54,17 +55,17 @@ class BlogController extends AbstractController
             $em->persist($article);
             $em->flush();
 
-            return new Response('L\'article a bien été enregistrer.');
+            return $this->redirectToRoute('admin');
         }
 
-    	return $this->render('blog/add.html.twig', [
+        return $this->render('blog/add.html.twig', [
             'form' => $form->createView()
         ]);
     }
 
     public function show(Article $article)
     {
-    	return $this->render('blog/show.html.twig', [
+        return $this->render('blog/show.html.twig', [
             'article' => $article
         ]);
     }
@@ -109,18 +110,37 @@ class BlogController extends AbstractController
             $em->persist($article);
             $em->flush();
 
-            return new Response('L\'article a bien été modifier.');
+            return $this->redirectToRoute('admin');
         }
 
-    	return $this->render('blog/edit.html.twig', [
+        return $this->render('blog/edit.html.twig', [
             'article' => $article,
             'form' => $form->createView()
         ]);
     }
 
-    public function remove($id)
+    public function remove(Article $article)
     {
-    	return new Response('<h1>Delete article: ' .$id. '</h1>');
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($article);
+        $em->flush();
+
+        return $this->redirectToRoute('admin');
+    }
+
+    public function admin()
+    {
+        $articles = $this->getDoctrine()->getRepository(Article::class)->findBy(
+            [],
+            ['lastUpdateDate' => 'DESC']
+        );
+
+        $users = $this->getDoctrine()->getRepository(User::class)->findAll();
+
+        return $this->render('admin/index.html.twig', [
+            'articles' => $articles,
+            'users' => $users
+        ]);
     }
 
     /**
@@ -130,13 +150,13 @@ class BlogController extends AbstractController
      * @param  string $delimiter [description]
      * @return string            [description]
      */
-    public function generateSlug($str, $replace = array(), $delimiter = '-'): string
+    public function generateSlug($str, $replace = [], $delimiter = '-'): string
     {
         if (!empty($replace)) {
             $str = str_replace((array) $replace, ' ', $str);
         }
 
-        $accent = array("é", "è");
+        $accent = ["é", "è"];
         $str    = str_replace($accent, 'e', $str);
         $str    = str_replace('ç', 'c', $str);
 
