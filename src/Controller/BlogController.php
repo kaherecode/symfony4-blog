@@ -7,6 +7,7 @@ use App\Entity\Article;
 use App\Form\ArticleType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class BlogController extends AbstractController
@@ -23,6 +24,8 @@ class BlogController extends AbstractController
 
     public function add(Request $request)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $article = new Article();
         $form = $this->createForm(ArticleType::class, $article);
 
@@ -70,6 +73,9 @@ class BlogController extends AbstractController
         ]);
     }
 
+    /**
+     * @IsGranted("ROLE_ADMIN")
+     */
     public function edit(Article $article, Request $request)
     {
         $oldPicture = $article->getPicture();
@@ -121,6 +127,8 @@ class BlogController extends AbstractController
 
     public function remove(Article $article)
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         $em = $this->getDoctrine()->getManager();
         $em->remove($article);
         $em->flush();

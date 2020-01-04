@@ -19,6 +19,9 @@
 			      	<ul id="nav-mobile" class="right hide-on-med-and-down">
 			        <li><a href="{{ path('homepage') }}">Home</a></li>
 			        {% if app.user %}
+			        	{% if is_granted('ROLE_ADMIN') %}
+							<li><a href="/admin">Admin.</a></li>
+						{% endif %}
 						<li><a href="/logout">Logout</a></li>
 					{% else %}
 						<li><a href="/login">Login</a></li>
